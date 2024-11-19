@@ -27,10 +27,13 @@ import androidx.navigation3.NavDisplay
 import androidx.navigation3.NavWrapperManager
 import androidx.navigation3.Record
 import androidx.navigation3.rememberNavWrapperManager
+import dany.nav.colorscreen.ColorScreen
 import dany.nav.di.AppComponent
+import dany.nav.di.LetterScreen
 import dany.nav.di.MainComponent
 import dany.nav.di.create
 import dany.nav.ui.theme.DanyNavDemoTheme
+import kotlin.reflect.KClass
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -62,7 +65,7 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun MainContent() {
     val records = (getAppComponent() as MainComponent).recordMap
-    val backStack = remember { mutableStateListOf("Main") }
+    val backStack = remember { mutableStateListOf<Any>("Main") }
     NavDisplay(
         backstack = backStack,
         wrapperManager = rememberNavWrapperManager(emptyList()),
@@ -72,17 +75,20 @@ fun MainContent() {
             Record("Main") {
                 Column {
                     Text("List of screens available (press button to nav):")
-                    records.keys.forEach {
-                        Button(
-                            onClick = { backStack.add(it) },
-                        ) {
-                            Text(text = it)
-                        }
+                    Button(
+                        onClick = { backStack.add(LetterScreen("A")) },
+                    ) {
+                        Text(text = "Nav to letter")
+                    }
+                    Button(
+                        onClick = { backStack.add(ColorScreen) },
+                    ) {
+                        Text(text = "Nav to colors")
                     }
                 }
             }
         } else {
-            records.getValue(key)
+            records.getValue(key::class).invoke(key)
         }
     }
 }

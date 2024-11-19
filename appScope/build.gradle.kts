@@ -1,6 +1,7 @@
 plugins {
     id("java-library")
     alias(libs.plugins.jetbrains.kotlin.jvm)
+    alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.ksp)
 }
 
@@ -16,6 +17,10 @@ kotlin {
 }
 
 dependencies {
+    implementation(platform(libs.androidx.compose.bom))
+    implementation(libs.androidx.compose.runtime)
+    implementation(libs.androidx.navigation3)
+
     implementation(libs.kotlin.inject.runtime)
     ksp(libs.kotlin.inject.compiler)
     implementation(libs.kotlin.inject.anvil.runtime)

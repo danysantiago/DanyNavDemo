@@ -14,17 +14,18 @@ import me.tatarka.inject.annotations.IntoMap
 import me.tatarka.inject.annotations.Provides
 import software.amazon.lastmile.kotlin.inject.anvil.ContributesTo
 import androidx.navigation3.Record
+import dany.nav.provideRecord
 
 @ContributesTo(AppScope::class)
 interface ColorComponent {
     @Provides
     @IntoMap
-    fun provideColorScreen(colorMaker: ColorMaker) = "Color Screen".let {key ->
-        key to Record(key) {
-            ColorScreen(colorMaker)
-        }
+    fun provideColorScreen(colorMaker: ColorMaker) = provideRecord<ColorScreen> {
+        ColorScreen(colorMaker)
     }
 }
+
+object ColorScreen
 
 @Composable
 fun ColorScreen(colorMaker: ColorMaker) {
