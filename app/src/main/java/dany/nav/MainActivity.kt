@@ -16,6 +16,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -33,10 +34,10 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             DanyNavDemoTheme {
-                val backStack = remember { mutableStateListOf("A") }
+                val superBackStack = SuperBackStack()
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),
-                    bottomBar = { BottomBarContent(backStack) }
+                    bottomBar = { BottomBarContent(superBackStack) }
                 ) { innerPadding ->
                     Column(
                         Modifier
@@ -48,7 +49,7 @@ class MainActivity : ComponentActivity() {
                             Modifier
                                 .padding(4.dp)
                         )
-                        MainContent(backStack)
+                        MainContent(superBackStack)
                     }
                 }
             }
@@ -56,17 +57,64 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+class SuperBackStack {
+    private var currentKey = mutableStateOf("A")
+    val key: String
+        get() = currentKey.value
+
+    val current: List<String>
+        get() = theBackstack.getValue(key)
+
+    private val theBackstack = mutableMapOf<String, MutableList<String>>(
+        "A" to mutableStateListOf("A"),
+        "B" to mutableStateListOf("B"),
+        "C" to mutableStateListOf("C")
+    )
+
+    fun onBack() {
+        val current = theBackstack.getValue(key)
+        current.removeAt(current.lastIndex)
+    }
+
+    fun swap(key: String) {
+        currentKey.value = key
+    }
+
+    fun navTo(key: String) {
+        val current = theBackstack.getValue(key)
+        current.add(key)
+    }
+
+
+}
+
 @Composable
-fun MainContent(backStack: MutableList<String>) {
-    val manager = rememberNavWrapperManager(emptyList())
+fun MainContent(backStack: SuperBackStack) {
     SingleTypeNavDisplay(
-        backstack = backStack,
-        wrapperManager = manager,
-        onBack = { backStack.removeAt(backStack.lastIndex) },
+        backstack = remember(backStack.key) { backStack.current },
+        wrapperManager = rememberNavWrapperManager(emptyList()),
+        onBack = { backStack.onBack() },
     ) { key ->
         when (key) {
-            "A", "B", "C" -> Record(key) {
+            "A", "C" -> Record(key) {
                 ScreenNameText(key)
+            }
+            "B" -> Record(key) {
+                Button(
+                    onClick = { backStack.navTo("DeepB") }
+                ) {
+                    Text("I am 'Screen B'")
+                }
+            }
+            "DeepB" -> Record(key) {
+                Button(
+                    onClick = { backStack.navTo("DeepDeepB") }
+                ) {
+                    Text("Deeper in B")
+                }
+            }
+            "DeepDeepB" -> Record(key) {
+                Text("At the bottom of B")
             }
             else -> error("Unknown key: $key")
         }
@@ -74,13 +122,12 @@ fun MainContent(backStack: MutableList<String>) {
 }
 
 @Composable
-fun BottomBarContent(backStack: MutableList<String>) {
+fun BottomBarContent(backStack: SuperBackStack) {
     Row(
         modifier = Modifier.background(Color.LightGray).padding(4.dp)
     ) {
         fun navigateTo(key: String) {
-            backStack.clear()
-            backStack.add(key)
+            backStack.swap(key)
         }
         Button(
             modifier = Modifier.weight(1f),
@@ -109,7 +156,7 @@ inline fun <reified T : Any> SingleTypeNavDisplay(
     wrapperManager: NavWrapperManager,
     modifier: Modifier = Modifier,
     noinline onBack: () -> Unit = {},
-    crossinline recordProvider: (key: T) -> Record
+    crossinline recordProvider: (key: T) -> Record<T>
 ) {
     NavDisplay(backstack, wrapperManager, modifier, onBack) {
         check(it is T) {
@@ -136,6 +183,6 @@ fun ScreenNameText(letter: String) {
 @Composable
 fun MainPreview() {
     DanyNavDemoTheme {
-        MainContent(backStack = mutableListOf())
+        MainContent(backStack = SuperBackStack())
     }
 }
