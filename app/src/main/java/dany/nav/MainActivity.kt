@@ -4,13 +4,32 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Button
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.navigation3.NavDisplay
+import androidx.navigation3.NavWrapperManager
+import androidx.navigation3.Record
+import androidx.navigation3.rememberNavWrapperManager
+import dany.nav.di.AppComponent
+import dany.nav.di.MainComponent
+import dany.nav.di.create
 import dany.nav.ui.theme.DanyNavDemoTheme
 
 class MainActivity : ComponentActivity() {
@@ -19,8 +38,21 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             DanyNavDemoTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    MainContent(modifier = Modifier.padding(innerPadding))
+                Scaffold(
+                    modifier = Modifier.fillMaxSize(),
+                ) { innerPadding ->
+                    Column(
+                        Modifier
+                            .padding(innerPadding)
+                            .consumeWindowInsets(innerPadding)
+                    ) {
+                        Text("Dany's Nav Demo")
+                        Spacer(
+                            Modifier
+                                .padding(4.dp)
+                        )
+                        MainContent()
+                    }
                 }
             }
         }
@@ -28,8 +60,31 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun MainContent(modifier: Modifier = Modifier) {
-    Text(text = "Nothing here yet...", modifier = modifier)
+fun MainContent() {
+    val records = (getAppComponent() as MainComponent).recordMap
+    val backStack = remember { mutableStateListOf("Main") }
+    NavDisplay(
+        backstack = backStack,
+        wrapperManager = rememberNavWrapperManager(emptyList()),
+        onBack = { backStack.removeAt(backStack.lastIndex) },
+    ) { key ->
+        if (key == "Main") {
+            Record("Main") {
+                Column {
+                    Text("List of screens available (press button to nav):")
+                    records.keys.forEach {
+                        Button(
+                            onClick = { backStack.add(it) },
+                        ) {
+                            Text(text = it)
+                        }
+                    }
+                }
+            }
+        } else {
+            records.getValue(key)
+        }
+    }
 }
 
 @Preview(showBackground = true)

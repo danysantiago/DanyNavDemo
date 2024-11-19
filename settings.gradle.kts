@@ -9,7 +9,7 @@ pluginManagement {
         }
         mavenCentral()
         gradlePluginPortal()
-        maven(url = uri("https://androidx.dev/snapshots/builds/12671848/artifacts/repository"))
+        maven(url = uri("https://androidx.dev/snapshots/builds/12678803/artifacts/repository"))
     }
 }
 dependencyResolutionManagement {
@@ -17,10 +17,11 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
-        maven(url = uri("https://androidx.dev/snapshots/builds/12671848/artifacts/repository"))
+        maven(url = uri("https://androidx.dev/snapshots/builds/12678803/artifacts/repository"))
     }
 }
 
 rootProject.name = "DanyNavDemo"
 include(":app")
- 
+include(":appScope")
+include(":colorScreen")
