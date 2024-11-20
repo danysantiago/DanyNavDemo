@@ -1,26 +1,48 @@
 package dany.nav
 
 import android.os.Bundle
-import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Button
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.navigation3.NavDisplay
+import androidx.navigation3.NavRecord
+import androidx.navigation3.rememberNavWrapperManager
+import dany.nav.di.ActivityComponent
+import dany.nav.player.PlayerScreen
 import dany.nav.ui.theme.DanyNavDemoTheme
 
-class MainActivity : ComponentActivity() {
+class MainActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
             DanyNavDemoTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    MainContent(modifier = Modifier.padding(innerPadding))
+                    Column(
+                        Modifier
+                            .padding(innerPadding)
+                            .consumeWindowInsets(innerPadding)
+                    ) {
+                        Text("Dany's Nav Demo")
+                        Spacer(
+                            Modifier
+                                .padding(4.dp)
+                        )
+                        MainContent(activityComponent)
+                    }
                 }
             }
         }
@@ -28,14 +50,40 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun MainContent(modifier: Modifier = Modifier) {
-    Text(text = "Nothing here yet...", modifier = modifier)
+fun MainContent(activityComponent: ActivityComponent) {
+    val recordFactories = activityComponent.navRecordFactories
+    val backstack = remember { mutableStateListOf<Any>("MainScreen") }
+    NavDisplay(
+        backstack = backstack,
+        wrapperManager = rememberNavWrapperManager(emptyList()),
+        onBack = { backstack.removeAt(backstack.lastIndex) }
+    ) { key ->
+        if (key == "MainScreen") {
+            NavRecord(Unit) {
+                MainScreen(backstack)
+            }
+        } else {
+            recordFactories.getValue(key::class).invoke(key)
+        }
+    }
 }
 
-@Preview(showBackground = true)
 @Composable
-fun MainPreview() {
-    DanyNavDemoTheme {
-        MainContent()
+fun MainScreen(backstack: MutableList<Any>) {
+    Column {
+        Text("Main Screen")
+        Button(
+            onClick = { backstack.add(ProfileScreen) }
+        ) {
+            Text("Go to profile")
+        }
+        repeat(10) { index ->
+            val id = index + 1
+            Button(
+                onClick = { backstack.add(PlayerScreen(id)) }
+            ) {
+                Text("Song $id")
+            }
+        }
     }
 }

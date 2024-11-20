@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.ksp)
 }
 
 android {
@@ -41,6 +42,7 @@ android {
 
 dependencies {
 
+    implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
@@ -60,4 +62,16 @@ dependencies {
     implementation(libs.androidx.navigation3)
     implementation(libs.androidx.lifecycle.viewmodel.navigation3)
     implementation(libs.androidx.lifecycle.viewmodel.compose)
+
+    implementation(libs.kotlin.inject.runtime)
+    ksp(libs.kotlin.inject.compiler)
+    implementation(libs.kotlin.inject.anvil.runtime)
+    implementation(libs.kotlin.inject.anvil.runtime.optional)
+    ksp(libs.kotlin.inject.anvil.compiler)
+
+    implementation(project(":core:appScope"))
+    implementation(project(":core:activityScope"))
+    implementation(project(":core:network"))
+    implementation(project(":features:player"))
+    implementation(project(":features:profile"))
 }

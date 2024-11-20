@@ -10,6 +10,13 @@
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/app" />
+            <option value="$PROJECT_DIR$/core" />
+            <option value="$PROJECT_DIR$/core/activityScope" />
+            <option value="$PROJECT_DIR$/core/appScope" />
+            <option value="$PROJECT_DIR$/core/network" />
+            <option value="$PROJECT_DIR$/features" />
+            <option value="$PROJECT_DIR$/features/player" />
+            <option value="$PROJECT_DIR$/features/profile" />
           </set>
         </option>
         <option name="resolveExternalAnnotations" value="false" />
