@@ -13,11 +13,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import dany.nav.di.ActivityScope
 import dany.nav.di.provideRecord
+import dany.nav.di.provideSerializer
 import dany.nav.player.di.PlayerComponent
+import kotlinx.serialization.Serializable
 import me.tatarka.inject.annotations.IntoMap
 import me.tatarka.inject.annotations.Provides
 import software.amazon.lastmile.kotlin.inject.anvil.ContributesTo
 
+@Serializable
 data class PlayerScreen(val songId: Int)
 
 @ContributesTo(ActivityScope::class)
@@ -28,6 +31,10 @@ interface PlayerScreenContributor {
         val playerComponent = remember { playerComponentFactory.createPlayerComponent() }
         PlayerScreenContent(it, playerComponent.controller)
     }
+
+    @Provides
+    @IntoMap
+    fun providePlayerScreenSerializer() = provideSerializer<PlayerScreen>()
 }
 
 @Composable

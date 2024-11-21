@@ -34,5 +34,8 @@ dependencies {
     implementation(libs.kotlin.inject.anvil.runtime.optional)
     ksp(libs.kotlin.inject.anvil.compiler)
 
+    implementation(libs.kotlinx.serialization.core)
+    implementation(libs.androidx.savedstate)
+
     implementation(project(":core:appScope"))
 }

@@ -12,9 +12,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation3.NavDisplay
@@ -52,7 +49,7 @@ class MainActivity : BaseActivity() {
 @Composable
 fun MainContent(activityComponent: ActivityComponent) {
     val recordFactories = activityComponent.navRecordFactories
-    val backstack = remember { mutableStateListOf<Any>("MainScreen") }
+    val backstack = activityComponent.savableMutableStateNavListFactory.of("MainScreen")
     NavDisplay(
         backstack = backstack,
         wrapperManager = rememberNavWrapperManager(emptyList()),
