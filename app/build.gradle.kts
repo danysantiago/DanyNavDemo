@@ -2,6 +2,8 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.hilt)
 }
 
 android {
@@ -60,4 +62,10 @@ dependencies {
     implementation(libs.androidx.navigation3)
     implementation(libs.androidx.lifecycle.viewmodel.navigation3)
     implementation(libs.androidx.lifecycle.viewmodel.compose)
+
+    implementation(libs.hilt.runtime)
+    ksp(libs.hilt.compiler)
+
+    implementation(project(":hilt-nav3-runtime"))
+    ksp(project(":hilt-nav3-compiler"))
 }

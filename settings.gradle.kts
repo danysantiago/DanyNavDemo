@@ -9,7 +9,7 @@ pluginManagement {
         }
         mavenCentral()
         gradlePluginPortal()
-        maven(url = uri("https://androidx.dev/snapshots/builds/12671848/artifacts/repository"))
+        maven(url = uri("https://androidx.dev/snapshots/builds/12695183/artifacts/repository"))
     }
 }
 dependencyResolutionManagement {
@@ -17,10 +17,11 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
-        maven(url = uri("https://androidx.dev/snapshots/builds/12671848/artifacts/repository"))
+        maven(url = uri("https://androidx.dev/snapshots/builds/12695183/artifacts/repository"))
     }
 }
 
 rootProject.name = "DanyNavDemo"
 include(":app")
- 
+include(":hilt-nav3-runtime")
+include(":hilt-nav3-compiler")
