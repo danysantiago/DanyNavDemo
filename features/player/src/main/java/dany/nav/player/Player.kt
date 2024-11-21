@@ -8,7 +8,6 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.coroutineScope
 import dany.nav.network.HttpClient
 import dany.nav.player.di.PlayerScope
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -22,7 +21,7 @@ class ExoPlayer(private val httpClient: HttpClient)
 
 @Inject
 @SingleIn(PlayerScope::class)
-class PlayerState constructor(
+class PlayerState(
     private val exoPlayer: ExoPlayer,
     private val lifecycle: Lifecycle
 ) {

@@ -17,8 +17,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.navigation3.ViewModelStoreNavContentWrapper
 import androidx.navigation3.NavDisplay
 import androidx.navigation3.NavRecord
+import androidx.navigation3.SavedStateNavContentWrapper
 import androidx.navigation3.rememberNavWrapperManager
 import dany.nav.di.ActivityComponent
 import dany.nav.player.PlayerScreen
@@ -51,11 +53,12 @@ class MainActivity : BaseActivity() {
 
 @Composable
 fun MainContent(activityComponent: ActivityComponent) {
+    val navWrappers = activityComponent.navWrappers
     val recordFactories = activityComponent.navRecordFactories
     val backstack = remember { mutableStateListOf<Any>("MainScreen") }
     NavDisplay(
         backstack = backstack,
-        wrapperManager = rememberNavWrapperManager(emptyList()),
+        wrapperManager = rememberNavWrapperManager(navWrappers.toList()),
         onBack = { backstack.removeAt(backstack.lastIndex) }
     ) { key ->
         if (key == "MainScreen") {

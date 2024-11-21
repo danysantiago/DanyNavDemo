@@ -34,5 +34,8 @@ dependencies {
     implementation(libs.kotlin.inject.anvil.runtime.optional)
     ksp(libs.kotlin.inject.anvil.compiler)
 
+    implementation(libs.androidx.lifecycle.viewmodel.navigation3)
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
+
     implementation(project(":core:appScope"))
 }

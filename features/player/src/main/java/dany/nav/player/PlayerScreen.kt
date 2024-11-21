@@ -11,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.viewmodel.compose.viewModel
 import dany.nav.di.ActivityScope
 import dany.nav.di.provideRecord
 import dany.nav.player.di.PlayerComponent
@@ -24,14 +25,22 @@ data class PlayerScreen(val songId: Int)
 interface PlayerScreenContributor {
     @Provides
     @IntoMap
-    fun providePlayerScreen(playerComponentFactory: PlayerComponent.Factory) = provideRecord<PlayerScreen> {
+    fun providePlayerScreen(
+        playerComponentFactory: PlayerComponent.Factory,
+        viewModelCreator: () -> PlayerViewModel,
+    ) = provideRecord<PlayerScreen> {
         val playerComponent = remember { playerComponentFactory.createPlayerComponent() }
-        PlayerScreenContent(it, playerComponent.controller)
+        val vm = viewModel { viewModelCreator.invoke() }
+        PlayerScreenContent(it, playerComponent.controller, vm)
     }
 }
 
 @Composable
-private fun PlayerScreenContent(playerScreen: PlayerScreen, controller: PlayerController) {
+private fun PlayerScreenContent(
+    playerScreen: PlayerScreen,
+    controller: PlayerController,
+    viewModel: PlayerViewModel,
+) {
     Column {
         Text("Song #${playerScreen.songId}")
         Row {

@@ -1,6 +1,15 @@
 package dany.nav.player
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
+import dany.nav.network.HttpClient
+import me.tatarka.inject.annotations.Inject
 
-internal class PlayerViewModel : ViewModel() {
+@Inject
+class PlayerViewModel(
+    private val httpClient: HttpClient,
+) : ViewModel() {
+    init {
+        Log.d("PlayerViewModel", "init")
+    }
 }
